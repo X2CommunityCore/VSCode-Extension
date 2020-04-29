@@ -144,7 +144,7 @@ export async function runMod() {
         var SetLocationCommand = "cd \"" + gameExePath + "\"";
         await useTerminal.sendText(SetLocationCommand, true);
     
-        var LaunchCommand = ".\\xcom.exe -windowed -showlog";
+        var LaunchCommand = ".\\xcom.exe -windowed -showlog -allowconsole -nostartupmovies";
         await useTerminal.sendText(LaunchCommand, true);
     }
 }
