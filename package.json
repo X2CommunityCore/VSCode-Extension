@@ -3,7 +3,7 @@
 	"publisher": "Firaxis",
 	"displayName": "XCOM-SDK",
 	"description": "Tools for developing XCOM mods",
-	"version": "1.0.0",
+	"version": "1.1.0a",
 	"engines": {
 		"vscode": "^1.42.0"
 	},
