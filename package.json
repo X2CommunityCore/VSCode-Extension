@@ -74,7 +74,7 @@
 			{
 				"command": "extension.xcom-editor",
 				"title": "XCom-SDK-Editor"
-			},			
+			},
 			{
 				"command": "extension.xcom-run",
 				"title": "XCom-SDK-Run"
@@ -82,6 +82,18 @@
 			{
 				"command": "extension.xcom-publish",
 				"title": "XCom-SDK-Publish"
+			},
+			{
+				"command": "extension.xcom-makeall",
+				"title": "XCom-SDK-MakeAll"
+			},
+			{
+				"command": "extension.xcom-cookhighlander",
+				"title": "XCom-SDK-CookHighlander"
+			},
+			{
+				"command": "extension.xcom-cookpackage",
+				"title": "XCom-SDK-CookPackage"
 			}
 		]
 	},
