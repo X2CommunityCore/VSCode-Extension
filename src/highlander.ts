@@ -32,7 +32,7 @@ export async function cookHighlander()
     editIniFile(vscode.Uri.file(EngineIniPath),"UseTextureFileCache=","TRUE");
 
     //Execute build commandlet
-    executeCommandlet('make -final_release -full');
+    executeCommandlet('CookPackages -platform=pcconsole -final_release -quickanddirty -modcook -sha -multilanguagecook=INT+FRA+ITA+DEU+RUS+POL+KOR+ESN -singlethread');
 }
 
 /**
