@@ -121,7 +121,7 @@
 	"dependencies": {
 		"chokidar": "^3.3.1",
 		"find-process": "^1.4.3",
-		"fs-extra": "^9.0.0",
+		"fs-extra": "^9.0.1",
 		"lockfile": "^1.0.4",
 		"ps-list": "^7.0.0",
 		"punycode": "^2.1.1"
