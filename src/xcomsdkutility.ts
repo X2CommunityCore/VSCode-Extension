@@ -31,6 +31,14 @@ export async function copyDirectory(source: string, destination: string)
             var To = destination + "/" + name;
             fs.copyFileSync(From, To);
         }
+        // Standard copyfilesync doesn't copy recurisvely
+        else if( type === vscode.FileType.Directory )
+        {
+            // Declare fs-ext
+            const fs_ext = require('fs-extra');
+            //perform the copy
+            fs_ext.copy(source, destination);
+        }
     }
 }
 
