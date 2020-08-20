@@ -11,7 +11,7 @@ The XCOM SDK extension provides a set of commands to complement / use tools prov
 * `XCom-SDK-Run`: deploy a mod project to the steam installation directories and run the game in a developer mode to test your mod
 * `XCom-SDK-Publish`: create a steam workshop item for your mod, or update an existing workshop item 
 
-# New commands 
+## New commands 
 
 * `XCom-SDK-MakeAll`: Executes `make -final_release -full`, usually for making a highlander.
 * `XCom-SDK-CookHighlander`: Executes `CookPackages -platform=pcconsole -final_release -quickanddirty -modcook -sha -multilanguagecook=INT+FRA+ITA+DEU+RUS+POL+KOR+ESN -singlethread`, usually after running the above command. This is the second part of highlander cooking. The cooked script packages can be found in `XComGame/Published/CookedPCConsole`.
