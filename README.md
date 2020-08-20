@@ -29,6 +29,14 @@ This extension contributes the following settings, which must be set after insta
 * `Paths.GameInstallPath`: location of the XCom game installtion. Example: `C:\Program Files (x86)\Steam\steamapps\common\Dio`
 * `Paths.XCOM-SDKInstallPath`: location of the XCom SDK installtion. Example: `C:\Program Files (x86)\Steam\steamapps\common\Dio_SDK`
 
+# Development
+
+To compile and package the extension for VSCode, the following commands need to be ran in order inside the folder with package.json:
+* npm install -g vsce
+* npm ci
+* npm run compile
+* vsce package
+
 **Enjoy!**
 
 ## Credits
