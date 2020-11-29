@@ -41,5 +41,5 @@ To compile and package the extension for VSCode, the following commands need to 
 
 ## Credits
 
-Firaxis Games - Initial implementation
-E3245 - Coding extra addons
+* Firaxis Games - Initial implementation
+* E3245 - Coding extra addons
