@@ -3,7 +3,7 @@
 	"publisher": "Firaxis",
 	"displayName": "XCOM-SDK",
 	"description": "Tools for developing XCOM mods",
-	"version": "1.0.0",
+	"version": "1.1.0a",
 	"engines": {
 		"vscode": "^1.42.0"
 	},
@@ -74,7 +74,7 @@
 			{
 				"command": "extension.xcom-editor",
 				"title": "XCom-SDK-Editor"
-			},			
+			},
 			{
 				"command": "extension.xcom-run",
 				"title": "XCom-SDK-Run"
@@ -82,6 +82,18 @@
 			{
 				"command": "extension.xcom-publish",
 				"title": "XCom-SDK-Publish"
+			},
+			{
+				"command": "extension.xcom-makeall",
+				"title": "XCom-SDK-MakeAll"
+			},
+			{
+				"command": "extension.xcom-cookhighlander",
+				"title": "XCom-SDK-CookHighlander"
+			},
+			{
+				"command": "extension.xcom-cookpackage",
+				"title": "XCom-SDK-CookPackage"
 			}
 		]
 	},
@@ -109,7 +121,7 @@
 	"dependencies": {
 		"chokidar": "^3.3.1",
 		"find-process": "^1.4.3",
-		"fs-extra": "^9.0.0",
+		"fs-extra": "^9.0.1",
 		"lockfile": "^1.0.4",
 		"ps-list": "^7.0.0",
 		"punycode": "^2.1.1"

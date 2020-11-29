@@ -31,6 +31,14 @@ export async function copyDirectory(source: string, destination: string)
             var To = destination + "/" + name;
             fs.copyFileSync(From, To);
         }
+        // Standard copyfilesync doesn't copy recurisvely
+        else if( type === vscode.FileType.Directory )
+        {
+            // Declare fs-ext
+            const fs_ext = require('fs-extra');
+            //perform the copy
+            fs_ext.copy(source, destination);
+        }
     }
 }
 
@@ -89,4 +97,29 @@ export function getWorkspaceName(): string
     }
     
     return "undefined";
+}
+
+/**
+ * buildInternal() copied from Build.ts, changes path to the SDK path and executes any command to the XComGame.exe
+ */
+export async function executeCommandlet(command: string)
+{
+    // Fetch the path to the templates
+    const configuration = vscode.workspace.getConfiguration();
+    var stdPathStr = configuration.get('conf.Paths.XCOM-SDKInstallPath') as string;
+    var pathStr = stdPathStr + "/Binaries/Win64/";    
+    
+    // Run the make command within the terminal
+    var useTerminal: vscode.Terminal = getXComSDKTerminal();
+    if( useTerminal )
+    {
+        //Force focus on the XCOM SDK terminal        
+        useTerminal.show();
+           
+        var SetLocationCommand = "cd \"" + pathStr + "\"";
+        await useTerminal.sendText(SetLocationCommand, true);
+    
+        var BuildCommand = ".\\XComGame.com " + command;
+        await useTerminal.sendText(BuildCommand, true);
+    }
 }

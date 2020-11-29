@@ -5,6 +5,7 @@ import { showCreateMenu } from './createnew';
 import { buildScripts, buildShaderCache } from './build';
 import { runMod, runEditor } from './run';
 import { publishMod } from './publish';
+import { compileMakeAll, cookHighlander, cookPackage } from './highlander';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -41,6 +42,24 @@ export function activate(context: vscode.ExtensionContext) {
 		publishMod();
 	});
 	context.subscriptions.push(publishDisposable);
+
+	//E3245: Additonal Commands
+	//E3245: Additonal Commands
+	let nakeAllDisposable = vscode.commands.registerCommand('extension.xcom-makeall', () => {		
+		compileMakeAll();
+	});
+	context.subscriptions.push(nakeAllDisposable);
+
+	let cookhighlanderDisposable = vscode.commands.registerCommand('extension.xcom-cookhighlander', () => {		
+		cookHighlander();
+	});
+	context.subscriptions.push(cookhighlanderDisposable);
+
+	let cookPackagesDisposable = vscode.commands.registerCommand('extension.xcom-cookpackage', () => {		
+		cookPackage();
+	});
+	context.subscriptions.push(cookPackagesDisposable);
+
 }
 
 // this method is called when your extension is deactivated
