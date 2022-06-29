@@ -4,7 +4,7 @@
 import * as vscode from 'vscode';
 import { window } from 'vscode';
 import * as fs from 'fs';
-import { getXComSDKTerminal, getWorkspaceName, delay } from './xcomsdkutility';
+import { getXComSDKTerminal, getWorkspaceName, delay, getScriptPackageNames, DeleteAllScriptsInDirectory, DeleteSpecificScriptFiles } from './xcomsdkutility';
 import { TextDecoder } from 'util';
 import { Z_FIXED } from 'zlib';
 
@@ -14,7 +14,7 @@ import { Z_FIXED } from 'zlib';
 export async function buildScripts() 
 {   
     // make sure we have a workspace
-    var workspaceName = getWorkspaceName();
+    const workspaceName = getWorkspaceName();
     if( workspaceName === "undefined" )
     {
         window.showErrorMessage(`No workspace loaded, cancelling build`);
@@ -22,16 +22,26 @@ export async function buildScripts()
     }
     
     // produce paths + command
-    var devRoot = (vscode.workspace.getConfiguration().get('conf.Paths.XCOM-SDKInstallPath') as string);
-    var modPath = devRoot + "/Development/Src/" + workspaceName;    
-    var command = "make -mods " + workspaceName + " \"" + modPath + "\"";
-
+    const devRoot = (vscode.workspace.getConfiguration().get('conf.Paths.XCOM-SDKInstallPath') as string);
+    const modPath = devRoot + "/Development/Src/" + workspaceName;    
+    const command = "make -mods " + workspaceName + " \"" + modPath + "\"";
+	const QuickCompile = vscode.workspace.getConfiguration().get('conf.Compile.QuickScriptCompile') as boolean;
+	
     // delete the module from the scripts output folder if it already exists
-    var compiledModulePath = devRoot + "/XComGame/Script/" + workspaceName + ".u";
-    if( fs.existsSync(compiledModulePath) )
-    {
-        fs.unlinkSync(compiledModulePath);
-    }
+    const compiledModulePath = devRoot + "/XComGame/Script/";
+	
+	// remove all script files in the directory
+	try
+	{
+		if (QuickCompile)
+			DeleteSpecificScriptFiles(compiledModulePath);
+		else
+			DeleteAllScriptsInDirectory(compiledModulePath);	
+	}
+	catch (error)
+	{
+		window.showInformationMessage(`FAILED to delete SCRIPT MODULE! Reason: ` + error);
+	}
 
     //Watch the launch log for compile results
     var bReportedLaunch = false;

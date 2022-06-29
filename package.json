@@ -3,7 +3,7 @@
 	"publisher": "Firaxis",
 	"displayName": "XCOM-SDK",
 	"description": "Tools for developing XCOM mods",
-	"version": "1.1.0a",
+	"version": "1.1.1",
 	"engines": {
 		"vscode": "^1.42.0"
 	},
@@ -16,7 +16,7 @@
 		"url": "https://github.com/ramcfall/test.git"
 	},
 	"activationEvents": [
-		"*"
+		"onStartupFinished"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -47,13 +47,28 @@
 				"properties": {
 					"conf.Paths.GameInstallPath": {
 						"type": "string",
-						"default": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dio",
-						"description": "Location where XCOM: Chimera Squad is installed"
+						"default": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\XCOM-Chimera-Squad",
+						"description": "Location where XCOM: Chimera Squad is installed. Mods are copied to the \\Mods\\ directory, and the Run commandlet executes XComGame.exe by default."
 					},
 					"conf.Paths.XCOM-SDKInstallPath": {
 						"type": "string",
-						"default": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\Dio_SDK",
+						"default": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\XCOM-Chimera-Squad-SDK",
 						"description": "Location where the XCOM SDK is installed"
+					},
+					"conf.Launch.XCOM-ChimeraSquad-GameLaunchPath": {
+						"type": "string",
+						"default": "C:\\Program Files (x86)\\Steam\\steamapps\\common\\XCOM-Chimera-Squad\\Binaries\\Win64\\",
+						"description": "If defined, will path to this location when the Run commandlet is executed. The executable must be defined in the LaunchCommand configuration or nothing will happen."
+					},
+					"conf.Launch.XCOM-ChimeraSquad-LaunchCommand": {
+						"type": "string",
+						"default": "xcom.exe -allowconsole -showlog",
+						"description": "Custom commands for program defined in GameLaunchPath."
+					},
+					"conf.Compile.QuickScriptCompile": {
+						"type": "boolean",
+						"default": "true",
+						"description": "When building, removes all *.u script files tied to the mod, but leaves the native script packages (XComGame.u, Engine.u, Core.u) alone. Disable to remove all script files in the directory on every script compilation."
 					}
 				}
 			}
@@ -110,9 +125,9 @@
 		"@types/mocha": "^7.0.1",
 		"@types/node": "^12.11.7",
 		"@types/vscode": "^1.42.0",
-		"eslint": "^6.8.0",
-		"@typescript-eslint/parser": "^2.18.0",
 		"@typescript-eslint/eslint-plugin": "^2.18.0",
+		"@typescript-eslint/parser": "^2.18.0",
+		"eslint": "^6.8.0",
 		"glob": "^7.1.6",
 		"mocha": "^7.0.1",
 		"typescript": "^3.7.5",

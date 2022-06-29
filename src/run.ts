@@ -5,7 +5,7 @@ import * as vscode from 'vscode';
 import { workspace, window, Uri } from 'vscode';
 import * as fs from 'fs';
 import { TextEncoder, TextDecoder } from 'util';
-import { getXComSDKTerminal, getWorkspaceName, copyDirectory } from './xcomsdkutility';
+import { getXComSDKTerminal, getWorkspaceName, copyDirectory, getScriptPackageNames } from './xcomsdkutility';
 
 async function updateModOptions(iniFilePath: Uri)
 {
@@ -68,7 +68,8 @@ export async function runMod() {
     const configuration = vscode.workspace.getConfiguration();
     var sdkPath = configuration.get('conf.Paths.XCOM-SDKInstallPath') as string;
     var pathToModSrcDir = vscode.workspace.rootPath as string;
-    
+	let ScriptPackageNames: string[] = [];
+	
     var workspaceName = getWorkspaceName();
     if( workspaceName === "undefined" )
     {
@@ -92,7 +93,7 @@ export async function runMod() {
         // Deploy to the XCOM game directory
         window.showInformationMessage(`Deploying mod files to the XCom game directory...`);
 
-        var pathToGameDir = gamePath + "/XComGame/Mods/" + workspaceName;
+        const pathToGameDir = gamePath + "/XComGame/Mods/" + workspaceName;
 
         // Base dir, copy files
         try {
@@ -108,18 +109,36 @@ export async function runMod() {
         // Are there script classes? if so copy the compiled script module
         if( fs.existsSync(pathToModSrcDir + "/Classes") )
         {
-            window.showInformationMessage(`Copying compiled script module...`);
-            var moduleFilename = workspaceName + ".u";
-            try {
-                if( !fs.existsSync(pathToGameDir +"/Script/") )
-                {
-                    fs.mkdirSync(pathToGameDir +"/Script/");
-                }
-                await fs.copyFileSync(sdkPath + "/XComGame/Script/" + moduleFilename, pathToGameDir +"/Script/" + moduleFilename);
-            }
-            catch(error) {
-                window.showInformationMessage(`FAILED to copy SCRIPT MODULE! Reason: ` + error + ` Check your path user settings the XCOM SDK.`);
-            }
+			// Read the config file and try to get all of the compiled .u files
+			try {
+				ScriptPackageNames =  await getScriptPackageNames();
+				
+				//window.showInformationMessage(`Copying compiled script module...`)
+				
+				let moduleFilename = "";
+				if( !fs.existsSync(pathToGameDir +"/Script/") )
+				{
+					fs.mkdirSync(pathToGameDir +"/Script/");
+				}
+				
+				for (var i = 0; i < ScriptPackageNames.length; ++i)
+				{
+					if (ScriptPackageNames[i] == null)
+						continue;
+						
+					window.showInformationMessage(`Copying SCRIPT: ` + ScriptPackageNames[i]);
+
+					moduleFilename = ScriptPackageNames[i] + ".u";
+					
+					await fs.copyFile(sdkPath + "/XComGame/Script/" + moduleFilename, pathToGameDir +"/Script/" + moduleFilename, (err) => { 
+						window.showInformationMessage(`` + err);
+					});
+				}
+			}
+			catch(error) 
+			{
+				window.showInformationMessage(`FAILED to copy SCRIPT MODULE! Reason: ` + error + ` Check your path user settings the XCOM SDK.`);
+			}
         }
 
         var modContentDir = sdkPath + "/XComGame/Content/Mods/" + workspaceName;
@@ -140,11 +159,35 @@ export async function runMod() {
         var modOptionsIniPath = gamePath + "/XComGame/Config/DefaultModOptions.ini";
         updateModOptions(vscode.Uri.file(modOptionsIniPath));
 
-        var gameExePath = gamePath + "/Binaries/Win64/";
-        var SetLocationCommand = "cd \"" + gameExePath + "\"";
-        await useTerminal.sendText(SetLocationCommand, true);
-    
-        var LaunchCommand = ".\\xcom.exe -allowconsole -showlog";
-        await useTerminal.sendText(LaunchCommand, true);
+		var gameExePath = configuration.get('conf.Launch.XCOM-ChimeraSquad-GameLaunchPath') as string;
+		var LaunchCommand = configuration.get('conf.Launch.XCOM-ChimeraSquad-LaunchCommand') as string;
+		let SetLocationCommand = "";
+		
+		// Default Launch Path if the path doesn't exist
+		if ( !fs.existsSync(gameExePath) )
+		{
+			window.showInformationMessage(`Failed to find path ` + gameExePath + `. Falling back to default path.`);
+			gameExePath 	= gamePath + "/Binaries/Win64/";	
+			SetLocationCommand = "cd \"" + gameExePath + "\"";		
+		}
+		else
+		{
+			SetLocationCommand = "cd \"" + gameExePath + "\"";
+		}
+		
+		if (!LaunchCommand)
+		{
+			LaunchCommand = ".\\xcom.exe -allowconsole -showlog"; 
+		}
+		else 
+		{
+			LaunchCommand = ".\\" + LaunchCommand;
+		}
+
+		window.showInformationMessage(`Executing ` + LaunchCommand);
+		
+		await useTerminal.sendText(SetLocationCommand, true);
+
+		await useTerminal.sendText(LaunchCommand, true);	
     }
 }

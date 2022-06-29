@@ -28,6 +28,9 @@ This extension contributes the following settings, which must be set after insta
 
 * `Paths.GameInstallPath`: location of the XCom game installtion. Example: `C:\Program Files (x86)\Steam\steamapps\common\Dio`
 * `Paths.XCOM-SDKInstallPath`: location of the XCom SDK installtion. Example: `C:\Program Files (x86)\Steam\steamapps\common\Dio_SDK`
+* `Launch.XCOM-ChimeraSquad-GameLaunchPath`: Run command paths to this directory and executes XCOM-ChimeraSquad-LaunchCommand. Example: `C:\Program Files (x86)\Steam\steamapps\common\Dio`
+* `Launch.XCOM-ChimeraSquad-LaunchCommand`: executes a set of launch commands. Example: `xcom.exe -allowconsole -showlog`
+* `Compile.QuickScriptCompile`: If set, does not delete native script files (XComGame.u, Engine.u) or other script files not tied to the current workspace when compiling scripts. Set to false to always delete all script files.
 
 # Development
 
