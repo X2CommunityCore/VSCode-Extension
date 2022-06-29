@@ -21,6 +21,9 @@ export async function copyDirectory(source: string, destination: string)
     {
         fs.mkdirSync(destination);
     }
+	
+    // Declare fs-ext
+    const fs_ext = require('fs-extra');
 
     for (const [name, type] of await workspace.fs.readDirectory( vscode.Uri.file(source) ))
     {
@@ -34,8 +37,7 @@ export async function copyDirectory(source: string, destination: string)
         // Standard copyfilesync doesn't copy recurisvely
         else if( type === vscode.FileType.Directory )
         {
-            // Declare fs-ext
-            const fs_ext = require('fs-extra');
+
             //perform the copy
             fs_ext.copy(source, destination);
         }
