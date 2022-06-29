@@ -125,3 +125,100 @@ export async function executeCommandlet(command: string)
         await useTerminal.sendText(BuildCommand, true);
     }
 }
+
+/**
+ * Decode entire file by finding first index of `+NonNativePackages=`, and last index of the last possible line
+ */
+export async function getScriptPackageNames() : Promise<string[]>
+{
+	var ScriptPackages: string[] = [];
+	
+	return await vscode.workspace.findFiles('**/XComEngine.ini', '/node_modules/', 5).then((uris: vscode.Uri[] ) => {
+		let firstindex = -1;
+		let dec = new TextDecoder();
+		let data = null;
+		let fileString = new String();
+			
+		// Set our findString to [Engine.ScriptPackages]
+		const findString = "+NonNativePackages=";
+		
+		for (let i = 0; i < uris.length; ++i)
+		{
+			// Read the ini file as a bytearray
+			data = fs.readFileSync(uris[i].fsPath);
+			
+			// Decode into string
+			fileString = dec.decode(data);
+			
+			// Get the first index of in the fileBuffer
+			firstindex = fileString.indexOf(findString);
+			
+			if (firstindex > -1)
+				break;		
+		}
+		
+		if (firstindex <= -1)
+		{
+			ScriptPackages.push(getWorkspaceName());
+			return ScriptPackages;
+		}
+
+		const lastindex = fileString.lastIndexOf(findString);
+		let k = lastindex+19;
+		
+		// From last index, determine endpoint
+		for (let j = k; j < fileString.length; j++)
+		{
+			// Break on the first newline, space, or comment
+			if (fileString[j] == "\\n" || fileString[j] == ";" || fileString[j] == " " || fileString[j] == "[")
+				break;
+			k++;
+		}
+			
+		// Slice then split the string
+		ScriptPackages = fileString.slice(firstindex, k).split(findString, 255);
+		
+		// Remove any newlines
+		for (let j = 0; j < ScriptPackages.length; ++j)
+		{
+			ScriptPackages[j] = ScriptPackages[j].replace(/(\r\n|\n|\r)/gm, "");
+		}
+		
+		return ScriptPackages;
+	});
+}
+
+export async function DeleteAllScriptsInDirectory(path : string)
+{
+	await fs.readdir(path, (err, files) => 
+	{
+		for (let i = 0; i < files.length; i++)
+		{
+			// These files must not be deleted for any reason!
+			if (files[i].toUpperCase() == "MANIFEST.TXT" || files[i].toUpperCase() == "DO_NOT_DELETE.TXT")
+				continue;
+			
+			fs.unlinkSync(path + files[i]);
+		};
+	});
+}
+
+export async function DeleteSpecificScriptFiles(path : string)
+{
+	let ScriptPackageNames =  await getScriptPackageNames();
+	
+	let moduleFilename = "";
+	
+	for (let i = 0; i < ScriptPackageNames.length; i++)
+	{
+		if (ScriptPackageNames[i] == null)
+			continue;
+
+		moduleFilename = path + ScriptPackageNames[i] + ".u";
+		
+		if( fs.existsSync(moduleFilename) )
+		{
+			fs.unlinkSync(moduleFilename);
+		}
+	}
+}
