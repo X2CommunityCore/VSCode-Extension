@@ -1,0 +1,1 @@
+Copyright (c) Firaxis Games. All rights reserved.
